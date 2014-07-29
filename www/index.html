@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Propriétés css - height & width</title>
+    <style>
+
+
+        body {
+            font-size: 12px;;
+        }
+
+        .example {
+            margin: auto;
+            padding:10px;
+            width: 250px;
+            min-height: 100px;
+        }
+
+        .parent, .child {
+            padding: 5px;
+            margin: 5px;
+            cursor: default;
+        }
+
+        .parent {
+            height: 100px;
+            width: 200px;
+            border: 2px solid red;
+            /*background-color: rgba(255, 0, 0, 0.2);*/
+            padding: 5px;
+        }
+
+        .child {
+            border: 2px solid green;
+            /*background-color: rgba(0, 255, 0, 0.2);*/
+        }
+
+        #tabs-2 .child {
+            display: inline;
+         }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        th, td, tr {
+            padding: 5px;
+            border: 1px solid black;
+        }
+
+        td, th {
+            width: 12%;
+        }
+
+        td:last, th:last {
+            width: 25%;
+        }
+
+    </style>
+
+    <link href="assets/jquery-ui-1.10.4.custom/css/smoothness/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+    <script src="assets/jquery-ui-1.10.4.custom/js/jquery-1.10.2.js"></script>
+    <script src="assets/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.js"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#tabs").tabs();
+
+            $(document).tooltip({
+                content: function (callback) {
+                    callback(
+                            $(this).prop('title')
+                                    .replace(new RegExp("\t(.*?)\n", 'gm'), '<span style="marging-left:5px;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp$1</span><br />', '<br />')
+                                    .replace(new RegExp("\n", 'gm'), '<br />')
+                    );
+
+                }
+            });
+
+            $('.parent, .child').attr('title', function () {
+                var $this = $(this);
+                var properties = ['box-sizing', 'height', 'width', 'margin', 'border-width', 'padding'];
+                var result = '.' + $this.attr('class') + " {\n";
+                for (var i = 0; i < properties.length; ++i) {
+                    result += "\t" + properties[i] + ': ' + $this.css(properties[i]) + ";\n";
+                }
+                return result + '}';
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+<h1>Propriétés css</h1>
+<h2>height & width</h2>
+<p>Par défaut, la taille d'un élément s'applique à la zone de contenu.
+    A la taille s'ajoute donc ensuite le padding, le border et le margin.
+    Mais peut être modifié par box-sizing.
+    Voir <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box_model#content">MDN</a>
+</p>
+<div id="tabs">
+<ul>
+    <li><a href="#tabs-1">Block</a></li>
+    <li><a href="#tabs-2">Inline</a></li>
+    <li><a href="#tabs-3">Inline-block</a></li>
+</ul>
+<div id="tabs-1">
+    <table>
+        <thead>
+        <tr>
+            <th>Cas</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Margin</th>
+            <th>Padding</th>
+            <th>Exemple</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Par défaut</th>
+            <td>Prend la valeur de son contenu. Si son contenu est un élément, prend la valeur de l'enfant, plus ses margin, border et padding.</td>
+            <td>Prend la valeur du parent - ses margin, border, padding.<br />
+                par exemple: (200)
+                - son margin left (5)
+                - son margin right (5)
+                - son border left (2)
+                - son border right (2)
+                - son padding left (5)
+                - son padding right (5) => 200 - 24 = 176</td>
+            <td>S'appliquent.</td>
+            <td>S'appliquent.</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu change de style (police, taille, espacement)</th>
+            <td>S'adapte.</td>
+            <td>N'est pas modifié.</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="font-size:3px">Lorem ipsum.</div>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <th>Si pas de contenu</th>
+            <td>Vaut 0 (attention que le border est décalé à cause du padding, ce qui donne l'impression que le block à une hauteur alors que son contenu n'en a pas).</td>
+            <td>N'est pas modifé.</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Quelle influence sur le frère?</th>
+            <td>Le frère se met juste en-dessous de l'élément. Autrement dit, la position y du frère dépend de la height + margin de
+                l'élément.
+            </td>
+            <td>Le frère se met toujours à la ligne, même s'il y a suffisamment de place à droite de l'élément.
+                Autrement dit, la position x du frère vaut toujours la position x de l'élément.
+            </td>
+            <td>Fusion des marges</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                    <div class="parent">
+                        <div class="child" style="width:30%;">Lorem ipsum.</div>
+                        <div class="child" style="width:30%;">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si on met en position absolue</th>
+            <td></td>
+            <td></td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent" style="position:relative">
+                        <div class="child" style="position:absolute">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si on force la valeur à 100%</th>
+            <td>Prend la valeur du parent => relativité se fait par rapport à la valeur du parent, indépendemment des padding, border et margin de l'élément.</td>
+            <td>Idem</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="width:100%; height:100%">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si la valeur dépasse la taille parent</th>
+            <td>L'élément dépasse le parent. Le frère se positionne à la suite, sans se soucier du parent, subissant donc le décalage.</td>
+            <td>L'élément dépasse le parent. (Pas d'impact sur le frère)</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example" style="margin-bottom:60px">
+                    <div class="parent">
+                        <div class="child" style="width:210px; height:110px">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Si la valeur dépasse la taille du parent: quelle influence sur les oncles?</th>
+            <td>L'oncle ne subit pas le décalage. Du coup, l'élément se superpose sur l'oncle. Pas d'impact sur la position de l'oncle. </td>
+            <td>Aucune incidence.</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="width:210px; height:110px">Lorem ipsum.</div>
+                    </div>
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu dépasse la taille du parent</th>
+            <td>Comportement identique à un dépassement de valeur.</td>
+            <td>Comportement identique à un dépassement de valeur.</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example" style="margin-bottom:30px">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias culpa et
+                            perferendis possimus ut. Consequuntur minima optio praesentium quaerat vitae?
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="example">
+
+                    <div class="parent">
+                        <div class="child">
+                            LoremipsumdolorsitametconsecteturadipisicingelitAliasculpaetperferendispossimusut.
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu dépasse la taille du parent: quelle influence sur le parent?</th>
+            <td>Comportement identique à un dépassement de valeur.</td>
+            <td>Comportement identique à un dépassement de valeur.</td>
+            <td>NA</td>
+            <td>NA</td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias culpa et
+                            perferendis possimus ut. Consequuntur minima optio praesentium quaerat vitae?
+                        </div>
+                    </div>
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+<div id="tabs-2">
+    <table>
+        <thead>
+        <tr>
+            <th>Cas</th>
+            <th>Height</th>
+            <th>Width</th>
+            <th>Exemple</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Par défaut</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu change de style (police, taille, espacement)</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="font-size:3px">Lorem ipsum.</div>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <th>Si pas de contenu</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Quelle influence sur le frère?</th>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                    <div class="parent">
+                        <div class="child" style="width:30%;">Lorem ipsum.</div>
+                        <div class="child" style="width:30%;">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si on met en position absolue</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent" style="position:relative">
+                        <div class="child" style="position:absolute">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si on force la valeur à 100%</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="width:100%; height:100%">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si la valeur dépasse la taille parent</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example" style="margin-bottom:60px">
+                    <div class="parent">
+                        <div class="child" style="width:210px; height:110px">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Si la valeur dépasse la taille du parent: quelle influence sur les oncles?</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child" style="width:210px; height:110px">Lorem ipsum.</div>
+                    </div>
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu dépasse la taille du parent</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example" style="margin-bottom:30px">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias culpa et
+                            perferendis possimus ut. Consequuntur minima optio praesentium quaerat vitae?
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="example">
+
+                    <div class="parent">
+                        <div class="child">
+                            LoremipsumdolorsitametconsecteturadipisicingelitAliasculpaetperferendispossimusut.
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Si le contenu dépasse la taille du parent: quelle influence sur le parent?</th>
+            <td></td>
+            <td></td>
+            <td>
+                <div class="example">
+                    <div class="parent">
+                        <div class="child">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias culpa et
+                            perferendis possimus ut. Consequuntur minima optio praesentium quaerat vitae?
+                        </div>
+                    </div>
+                    <div class="parent">
+                        <div class="child">Lorem ipsum.</div>
+                        <div class="child">Lorem ipsum.</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>
+<div id="tabs-3">
+</div>
+</div>
+
+
+</body>
+</html>
